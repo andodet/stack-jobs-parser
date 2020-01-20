@@ -62,10 +62,7 @@ def get_so_extras(job_url):
     try:
         page = requests.get(job_url, headers=ua)
         soup = BeautifulSoup(page.text, "html.parser")
-    except requests.HTTPError as e:
-        print(e)
-
-    try:
+    
         logo = soup.find("div", attrs={"class": "grid--cell bg-white fl-shrink0"}).img[
             "src"
         ]
@@ -77,11 +74,16 @@ def get_so_extras(job_url):
         extra_info["salary_lower"] = re.findall("(\d+)(|\s-\s)", salary)[0][0]
         extra_info["salary_upper"] = re.findall("(\d+)(|\s-\s)", salary)[1][0]
 
-    except Exception as e:
-        pass
+        return extra_info
 
-    time.sleep(3 * uniform(0, 1.5))  # be kind
-    return extra_info
+    except requests.HTTPError as e:
+        print(e)
+        raise
+    except Exception as e:
+        return extra_info
+        print(e)
+    finally:
+        time.sleep(3 * uniform(0, 1.5))  # be kind
 
 
 def get_job_id(job_dict):
