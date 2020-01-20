@@ -125,10 +125,16 @@ def push_to_gdrive(job_list, sheet):
         job_list(list): a list containing dict for each job.
         sheet: a gspread client connection to a Google Sheet.
     """
+
     if job_list:
         try:
             nrows_pre = len(sheet.col_values(1))
             nrows_post = nrows_pre + len(job_list)
+
+            # Add new lines if trying to append out of bounds
+            tot_rows = sheet.row_count
+            if nrows_post > tot_rows:
+                sheet.add_rows(nrows_post - tot_rows)
 
             # Get A1:B1 format coordiantes for range
             cell_list = sheet.range(
