@@ -2,22 +2,14 @@ import hashlib
 import requests
 import json
 import re
-import os
 import time
 from random import uniform
 
 from bs4 import BeautifulSoup
 
 import gspread
-from google.oauth2 import service_account
 from google.auth.transport.requests import AuthorizedSession
 
-
-# Authenthicate to gDrive
-credentials = service_account.Credentials.from_service_account_file(
-    os.environ["GOOGLE_AUTH_KEY"]
-)
-scoped_credentials = credentials.with_scopes(["https://spreadsheets.google.com/feeds"])
 
 ua = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36\
