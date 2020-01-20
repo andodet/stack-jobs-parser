@@ -27,6 +27,15 @@ def get_so_feed(url, payload):
 
 
 def parse_xml_feed(xml_feed):
+    """
+    Parses XML feed into a list of dictionaries
+
+    Args:
+        xml_feed (str): xml_feed blob
+
+    Returns:
+        list: a list of dicts (one dict each job listing)
+    """
 
     root = etree.fromstring(xml_feed)
     items = root.findall("channel/item")
@@ -67,6 +76,17 @@ def parse_xml_feed(xml_feed):
 
 
 def dedupe_jobs(job_list, job_sheet):
+    """
+    Removes jobs already imported from job_list
+
+    Args:
+        job_list (list): a list containing job entry dicts as returned by
+            `parse_xml_feed`.
+        job_sheet: google sheet client session
+
+    Returns:
+        list: a list containing new jobs.
+    """
 
     db_jobs = job_sheet.col_values(10)
 

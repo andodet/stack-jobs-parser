@@ -1,4 +1,3 @@
-from bs4 import BeautifulSoup
 import hashlib
 import requests
 import json
@@ -6,6 +5,8 @@ import re
 import os
 import time
 from random import uniform
+
+from bs4 import BeautifulSoup
 
 import gspread
 from google.oauth2 import service_account
@@ -25,6 +26,17 @@ ua = {
 
 
 def init_sheet_client(scoped_creds, sheet_id, sheet_name):
+    """
+    Get authenthicated session with Google sheets.
+
+    Arguments:
+        scoped_creds: a `oauth.service_account.Credentials` instance
+        sheet_id (str): a spreadsheet **ID**
+        sheet_name (str): name of the target worksheet 
+
+    Returns:
+        A `spreadsheet` instance
+    """
     try:
         client = gspread.Client(auth=scoped_creds)
         client.session = AuthorizedSession(scoped_creds)
@@ -39,11 +51,12 @@ def init_sheet_client(scoped_creds, sheet_id, sheet_name):
 def get_so_extras(job_url):
     """
     Get additional information from stackoverflow.com job listing page.
+
     Args:
         job_url (str): url pointing at job listing's page
+
     Returns:
-        dict: a dict containing additional info about the job
-        listing and company.
+        A `dict` containing scraped fields
     """
     # @TODO: add user-agent to better avoid traffic throttling
 
@@ -81,7 +94,7 @@ def get_so_extras(job_url):
 
 def get_job_id(job_dict):
     """
-    Produce a unique id for a job entry.
+    Hashes fields from the job entry to produce a unique job_id.
 
     Args:
         job_dict(dict): a dict containing basic info about the job listing.
@@ -93,7 +106,7 @@ def get_job_id(job_dict):
             }
 
     Returns:
-    str: a unique id based on sha1 value hashing
+        str: A string based on sha1 value hashing.
     """
 
     tmp = [
@@ -112,14 +125,11 @@ def get_job_id(job_dict):
 
 def push_to_gdrive(job_list, sheet):
     """
-    Push list of dicts containing job listing to gSheets
+    Pushes to Google sheets a list of job listings.
 
     Args:
-        job_list(list): a list containing dict for each job
-        sheet: a gspread client connection to a Google Sheet
-
-    Returns:
-        Pushes entries to gSheet
+        job_list(list): a list containing dict for each job.
+        sheet: a gspread client connection to a Google Sheet.
     """
     if job_list:
         try:
@@ -134,7 +144,7 @@ def push_to_gdrive(job_list, sheet):
                 )
             )
 
-            # Get list of elements to push
+            # Convert job dict to list
             to_push = []
             [[to_push.append(v) for k, v in d.items()] for d in job_list]
 
