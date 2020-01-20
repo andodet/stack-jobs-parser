@@ -2,21 +2,26 @@
 import os
 import utils
 import time
+import json
 
 import feed_parse
 
 from google.oauth2 import service_account
+from google.cloud import storage
 
 
-# Get gAuth credentials
-credentials = service_account.Credentials.from_service_account_file(
-    os.environ["GOOGLE_AUTH_KEY"]
-)
+def main(request):
 
-scoped_credentials = credentials.with_scopes(["https://spreadsheets.google.com/feeds"])
+    creds_blob = storage.Client().get_bucket("jobs-gsheet").get_blob(os.environ["GOOGLE_AUTH_KEY"])\
+        .download_as_string()
+    parsed_creds = json.loads(creds_blob)
 
+    # Get gAuth credentials
+    credentials = service_account.Credentials.from_service_account_info(
+        parsed_creds
+    )
 
-def main():
+    scoped_credentials = credentials.with_scopes(["https://spreadsheets.google.com/feeds"])
 
     print("Importing jobs...")
     t1 = time.time()
@@ -53,8 +58,3 @@ def main():
 
     print("Finished!")
     print("Done in {}".format(time.time() - t1))
-
-
-if __name__ == "__main__":
-
-    main()
