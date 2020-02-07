@@ -57,12 +57,13 @@ def get_so_extras(job_url):
         "salary_lower": None,
         "salary_upper": None,
         "salary_currency": None,
+        "company_listing": None
     }
 
     try:
         page = requests.get(job_url, headers=ua)
         soup = BeautifulSoup(page.text, "html.parser")
-    
+
         logo = soup.find("div", attrs={"class": "grid--cell bg-white fl-shrink0"}).img[
             "src"
         ]
@@ -73,6 +74,9 @@ def get_so_extras(job_url):
         extra_info["salary_currency"] = re.match("[^\d\.\,\s]+", salary)[0]
         extra_info["salary_lower"] = re.findall("(\d+)(|\s-\s)", salary)[0][0]
         extra_info["salary_upper"] = re.findall("(\d+)(|\s-\s)", salary)[1][0]
+        extra_info["company_listing"] = soup.find("div", attrs={
+            "class": "grid--cell apply job-details--display-contents clear js-apply-container"}
+            ).a["href"]
 
         return extra_info
 

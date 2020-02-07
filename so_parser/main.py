@@ -46,6 +46,7 @@ def main():
         job["salary_lower"] = extras["salary_lower"]
         job["salary_upper"] = extras["salary_upper"]
         job["salary_currency"] = extras["salary_currency"]
+        job["company_listing"] = extras["company_listing"]
 
     # Push jobs to gDrive
     utils.push_to_gdrive(feed_deduped, job_gsheet)

@@ -66,6 +66,7 @@ def parse_xml_feed(xml_feed):
             "salary_upper": None,
             "salary_currency": None,
             "company_logo": None,
+            "company_listing": None
         }
 
         job_dict["id"] = utils.get_job_id(job_dict)  # generate unique ID
