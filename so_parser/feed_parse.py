@@ -2,6 +2,9 @@ from datetime import datetime as dt
 from xml.etree import ElementTree as etree
 import requests
 import sys
+import csv
+import os
+from gspread import models
 
 import utils
 
@@ -83,15 +86,32 @@ def dedupe_jobs(job_list, job_sheet):
     Args:
         job_list (list): a list containing job entry dicts as returned by
             `parse_xml_feed`.
-        job_sheet: google sheet client session
+        job_sheet: google sheet client session or a csv file containing
+            containing job listings.
 
     Returns:
         list: a list containing new jobs.
     """
 
-    db_jobs = job_sheet.col_values(10)
-
     deduped_jobs = []
+
+    if isinstance(job_sheet, models.Worksheet):
+        db_jobs = job_sheet.col_values(10)
+
+    else:
+        db_jobs = []
+        try:
+            with open(job_sheet, 'r') as rf:
+                csv_reader = csv.reader(rf, delimiter=",")
+                for row in csv_reader:
+                    db_jobs.append(row[9])
+
+        # If output file doesn't exist yet, init an empty one with an header
+        except FileNotFoundError as e:
+            with open(job_sheet, "a") as output:
+                csv_writer = csv.DictWriter(output, job_list[0].keys())
+                csv_writer.writeheader()
+                print("file not found - init empty {}".format(job_sheet))
 
     for job in job_list:
         if job.get("id") not in db_jobs:

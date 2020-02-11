@@ -3,7 +3,9 @@ import requests
 import json
 import re
 import time
+import csv
 from random import uniform
+import os.path
 
 from bs4 import BeautifulSoup
 
@@ -164,3 +166,24 @@ def push_to_gdrive(job_list, sheet):
     else:
         print("No record got pushed - `job_list` is empty")
         pass
+
+
+def output_csv (job_list, f_name="output.csv"):
+    """
+    Appends new job listigns to a target csv file.
+
+    Args:
+    job_lists(list): a list containing dict for each job.
+    f_name(str): output file name
+    """
+
+    if job_list:
+        keys = job_list[0].keys()
+
+    with open(f_name, "a") as output:
+        dict_write = csv.DictWriter(output, keys)
+
+        if not os.path.isfile(f_name):
+            dict_write.writeheader()
+        
+        dict_write.writerows(job_list)
