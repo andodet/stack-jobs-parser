@@ -152,7 +152,7 @@ def push_to_gdrive(job_list, sheet):
 
             # Convert job dict to list
             to_push = []
-            [[to_push.append(v) for k, v in d.items()] for d in job_list]
+            [[to_push.append(v) for v in d.values()] for d in job_list]
 
             for i, val in enumerate(to_push):
                 cell_list[i].value = val
