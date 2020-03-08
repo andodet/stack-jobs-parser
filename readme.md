@@ -19,7 +19,8 @@ The script updates a Google spreadsheet with the following variables:
 |`salary_lower`|int| Min. salary                                               |
 |`salary_upper`|int| Max. salary                                               |
 |`salary_currency`|str| Currency denomination for salary                       |
-|`company_logo`|str| Url for company logo     
+|`company_logo`|str| Url for company logo                                      |
+|`company_listing`|str| Url for job listing on company's  website.             | 
 
 ## Steps
 
