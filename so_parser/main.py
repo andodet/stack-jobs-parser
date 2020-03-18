@@ -1,7 +1,7 @@
 # Revise import order
 import os
-import utils
 import time
+import utils
 
 import feed_parse
 
