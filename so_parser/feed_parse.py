@@ -4,6 +4,7 @@ import requests
 import sys
 import csv
 import os
+import re
 from gspread import models
 
 import utils
@@ -22,7 +23,7 @@ def get_so_feed(url, payload):
     """
     try:
         so_feed = requests.get(url, params=payload).text
-    except requests.exceptions as e:
+    except requests.RequestException as e:
         print(e)
         sys.exit()
 
@@ -47,7 +48,9 @@ def parse_xml_feed(xml_feed):
     for i, e in enumerate(items):
         job_dict = {
             "job_id": e.findtext("guid"),
-            "title": e.findtext("title"),
+            "title": re.match(
+                pattern='.+?(?= at)',
+                string=e.findtext("title"))[0],
             "job_url": e.findtext("link"),
             "author": e.findtext(
                 """{http://www.w3.org/2005/Atom}author/{http://www.w3.org/2005/Atom}name"""
