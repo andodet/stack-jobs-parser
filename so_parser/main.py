@@ -52,7 +52,7 @@ def main():
     utils.push_to_gdrive(feed_deduped, job_gsheet)
 
     print("Finished!")
-    print("Done in {}".format(time.time() - t1))
+    print("Done in {} secs.".format(round(time.time() - t1, 2)))
 
 
 if __name__ == "__main__":
