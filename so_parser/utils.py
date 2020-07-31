@@ -66,7 +66,7 @@ def get_so_extras(job_url):
         page = requests.get(job_url, headers=ua)
         soup = BeautifulSoup(page.text, "html.parser")
 
-        logo = soup.find("div", attrs={"class": "grid--cell bg-white fl-shrink0"}).img[
+        logo = soup.find("div", attrs={"class": "grid--cell fl-shrink0"}).img[
             "src"
         ]
         extra_info["company_logo"] = logo
